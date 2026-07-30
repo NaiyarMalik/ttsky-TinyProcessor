@@ -31,7 +31,7 @@ always @(posedge CLK or negedge RST)
       for (I=0 ; I < DEPTH ; I = I +1)
         begin
 		 if(I==2)
-          regArr[I] <= 'b100000_01 ;
+          regArr[I] <= 'b100000_10 ;
 		 else if (I==3) 
           regArr[I] <= 'b0000_1110 ;
          else
