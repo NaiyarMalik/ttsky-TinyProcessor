@@ -6,6 +6,20 @@
 */
 module tb ();
 
+   // Wire up the inputs and outputs:
+  reg clk;
+  reg rst_n;
+  reg ena;
+  reg [7:0] ui_in;
+  reg [7:0] uio_in;
+  wire [7:0] uo_out;
+  wire [7:0] uio_out;
+  wire [7:0] uio_oe;
+`ifdef GL_TEST
+  wire VPWR = 1'b1;
+  wire VGND = 1'b0;
+`endif
+
   parameter DATA_WIDTH_TB = 8;
   parameter ADDR_WIDTH_TB = 4;
 
@@ -39,37 +53,45 @@ module tb ();
 
     end
 
+task UART_BIT_DELAY;
+  begin
+    repeat(32*14)
+      @(posedge clk);
+  end
+
+endtask
 
 task LD_FRAME ;
   input  [DATA_WIDTH_TB-1:0]  FRAME_DATA ;
  
   integer   i  ;
 
-  begin
 	
-	  @(posedge user_project.U0_ClkDiv.o_div_clk)  
+  begin
+  
 	    ui_in[0] <= 1'b0 ;                    // start_bit
+      UART_BIT_DELAY();
 
 	  for(i=0; i<8; i=i+1)
 		  begin
-		    @(posedge user_project.U0_ClkDiv.o_div_clk) 		
-		      ui_in[0] <= FRAME_DATA[i] ;       // frame data bits
+		      ui_in[0] <= FRAME_DATA[i] ;       // frame data bits 
+          UART_BIT_DELAY();         
 		  end 
 
 	  if(user_project.U0_RegFile.REG2[0])
 		  begin
-		  	@ (posedge user_project.U0_ClkDiv.o_div_clk) 
-          begin
+          
             case(user_project.U0_RegFile.REG2[1])
               1'b0 : ui_in[0] <= ^FRAME_DATA  ;     // Even Parity
               1'b1 : ui_in[0] <= ~^FRAME_DATA ;     // Odd Parity
             endcase	
-          end
+
+            UART_BIT_DELAY();
+       
 		  end
 	
-	  @ (posedge user_project.U0_ClkDiv.o_div_clk) 
-	    ui_in[0] <= 1'b1 ;              // stop_bit
-
+	  ui_in[0] <= 1'b1 ;              // stop_bit
+    UART_BIT_DELAY();
   end
 endtask 
 
@@ -105,19 +127,7 @@ task write_cmd;
 endtask
 
 
-  // Wire up the inputs and outputs:
-  reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
-  wire [7:0] uo_out;
-  wire [7:0] uio_out;
-  wire [7:0] uio_oe;
-`ifdef GL_TEST
-  wire VPWR = 1'b1;
-  wire VGND = 1'b0;
-`endif
+ 
 
   // Replace tt_um_example with your module name:
   tt_um_TinyProcessor_naiyar_ user_project (
