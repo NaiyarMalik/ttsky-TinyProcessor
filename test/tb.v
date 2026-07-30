@@ -22,6 +22,8 @@ module tb ();
 
   parameter DATA_WIDTH_TB = 8;
   parameter ADDR_WIDTH_TB = 4;
+  parameter PARITY_ENABLE = 0;
+  parameter PARITY_TYPE = 0;
 
   initial 
     begin
@@ -34,22 +36,24 @@ module tb ();
   // Dump the signals to a FST file. You can view it with gtkwave or surfer.
   initial 
     begin
+      
 
       rst_n = 0;
       ena = 1;
-      ui_in = 8'b0;
-      uio_in = 8'b0;
+      ui_in = 8'b00000001;
+      uio_in = 8'b1;
 
+    $dumpfile("tb.fst");
+    $dumpvars(0,tb);
     #100;
       rst_n = 1;
 
-      $dumpfile("tb.fst");
-      $dumpvars(0, tb);
+      
       #1;
 
     // Write CMD
     write_cmd(4'h5, 8'hFF);
-    check_wr(4'h5, 8'hFF);
+    read_cmd(4'h5);
 
     end
 
@@ -69,49 +73,68 @@ task LD_FRAME ;
 	
   begin
   
-	    ui_in[0] <= 1'b0 ;                    // start_bit
+	    ui_in[0] = 1'b0 ;                    // start_bit
       UART_BIT_DELAY();
 
 	  for(i=0; i<8; i=i+1)
 		  begin
-		      ui_in[0] <= FRAME_DATA[i] ;       // frame data bits 
+		      ui_in[0] = FRAME_DATA[i] ;       // frame data bits 
           UART_BIT_DELAY();         
 		  end 
 
-	  if(user_project.U0_RegFile.REG2[0])
+	  if(PARITY_ENABLE)
 		  begin
           
-            case(user_project.U0_RegFile.REG2[1])
-              1'b0 : ui_in[0] <= ^FRAME_DATA  ;     // Even Parity
-              1'b1 : ui_in[0] <= ~^FRAME_DATA ;     // Odd Parity
+            case(PARITY_TYPE)
+              1'b0 : ui_in[0] = ^FRAME_DATA  ;     // Even Parity
+              1'b1 : ui_in[0] = ~^FRAME_DATA ;     // Odd Parity
             endcase	
 
             UART_BIT_DELAY();
        
 		  end
 	
-	  ui_in[0] <= 1'b1 ;              // stop_bit
+	  ui_in[0] = 1'b1 ;              // stop_bit
     UART_BIT_DELAY();
   end
 endtask 
 
-task check_wr;
-  input  [ADDR_WIDTH_TB-1:0]  ADDR ;
-  input  [DATA_WIDTH_TB-1:0]  DATA ;
- 
+task read_cmd;
+  input [ADDR_WIDTH_TB-1:0] ADDR;
+  reg [7:0] read_out;
+  integer i;
+
   begin
-    wait(user_project.U0_RegFile.WrEn)
-	  repeat(2) @(posedge clk); 
-	  if(user_project.U0_RegFile.regArr[ADDR[ADDR_WIDTH_TB-1:0]] == DATA)
-		  begin
-		  	$display("Write Operation is succeeded with configurations PARITY_ENABLE=%d PARITY_TYPE=%d  PRESCALE=%d  ",user_project.U0_RegFile.REG2[0],user_project.U0_RegFile.REG2[1],user_project.U0_RegFile.REG2[7:2]);
-		  end
-	  else
-		  begin
-			  $display("Write Operation is failed with configurations PARITY_ENABLE=%d PARITY_TYPE=%d  PRESCALE=%d  ",user_project.U0_RegFile.REG2[0],user_project.U0_RegFile.REG2[1],user_project.U0_RegFile.REG2[7:2]);
-	  	end	
+
+    // Send READ command
+    LD_FRAME(8'hBB);
+    LD_FRAME(ADDR);
+
+
+    wait(uo_out[0] == 1'b0);
+
+
+    // move half a bit into the start bit
+    repeat(16*14)
+        @(posedge clk);
+
+
+    // now wait one full bit to data[0]
+    UART_BIT_DELAY();
+
+
+    for(i=0;i<8;i++)
+    begin
+        read_out[i] = uo_out[0];
+        UART_BIT_DELAY();
+    end
+
+
+    $display("READ REGISTER ADDR=%d VALUE=%h", ADDR, read_out);
+
   end
-  endtask
+
+endtask
 
 task write_cmd;
   input [ADDR_WIDTH_TB-1:0] ADDR;
