@@ -7,7 +7,57 @@ You can also include images in this folder and reference them in the markdown. E
 512 kb in size, and the combined size of all images must be less than 1 MB.
 -->
 
-### TINY PROCESSOR
+# TinyProcessor
+
+## Overview
+
+TinyProcessor is a compact UART-controlled processor designed in Verilog and implemented as an ASIC using the Tiny Tapeout open-source design flow. The processor executes a small instruction set through serial communication, allowing a host computer or microcontroller to control memory operations and arithmetic functions using UART commands.
+
+The project was built to demonstrate the complete digital IC design workflow:
+
+RTL design -> Verification -> synthesis -> place-and-route -> physical implementation on silicon.
+
+## Features
+
+ - 50MHz System Clock
+
+ - 3.125MHz UART Clock (96000 Baud Rate) 
+
+ - UART-controlled instruction interface
+ 
+ - 8x8 bit register file
+ 
+ - Arithmetic Logic Unit (ALU):
+    - Addition
+    - Subtraction
+    - XOR
+    - NOR
+    - AND
+    - OR
+    - NAND
+    - XNOR
+    - Equal to
+    - Less than
+    - Greater than
+    - Shift Right by 1 bit
+    - Shift Left by 1 bit
+ 
+ - Four supported processor commands:
+        - Read Register
+        - Write Register
+        - ALU Operation with User Given Operands
+        - ALU Operation with Present Register Memory
+
+- Configurable UART baud-rate prescaler
+
+- UART parity enable and parity type configuration
+
+- Clock division and clock gating
+
+- Reset synchronization
+
+- Fully verified using Verilog Test Bench, Cocotb and GTKWave
+
 
 ## How it works
 
