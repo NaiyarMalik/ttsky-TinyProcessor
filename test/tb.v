@@ -43,7 +43,7 @@ module tb ();
       ui_in = 8'b00000001;
       uio_in = 8'b1;
 
-    $dumpfile("tb.fst");
+    $dumpfile("tb.vcd");
     $dumpvars(0,tb);
     #100;
       rst_n = 1;
@@ -54,6 +54,8 @@ module tb ();
     // Write CMD
     write_cmd(4'h5, 8'hFF);
     read_cmd(4'h5);
+
+    #500_000;
 
     end
 
