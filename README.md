@@ -4,13 +4,13 @@
 
 Welcome to **TinyProcessor**, a custom digital integrated circuit designed for physical silicon fabrication on the SkyWater 130nm process node via Tiny Tapeout!
 
----
+
 
 ## What is Tiny Tapeout?
 
 [Tiny Tapeout](https://tinytapeout.com/) is an educational platform designed to make chip design and silicon fabrication accessible to students, hobbyists, and engineers worldwide. By aggregating multiple digital designs onto a single shared die, Tiny Tapeout enables custom silicon implementations to be manufactured through open-source ASIC flows like OpenLane and SkyWater's PDK.
 
----
+
 
 ## Why I Built This Project
 
@@ -18,7 +18,7 @@ My journey into chip design started during my second year as an Electrical Engin
 
 That passion also runs in my family. Growing up, my dad was deeply passionate about technology and even owned a computer store back home. Seeing his passion for computers inspired me from a young age to think deeply about how these systems function from the inside out. Building `TinyProcessor` and taking it all the way from Verilog RTL to actual silicon floorplanning has been an incredible hands-on journey to turn that curiosity into real hardware.
 
----
+
 
 ## System Overview & Technical Details
 
@@ -30,7 +30,7 @@ That passion also runs in my family. Growing up, my dad was deeply passionate ab
 
 > 📖 **For full technical specifications, architecture diagrams, command protocol tables, and instruction set details, please check out [`info.md`](./info.md).**
 
----
+
 
 ## Quick Navigation
 
