@@ -112,6 +112,11 @@ Because the design is adapted for Tiny Tapeout, the entire chip operates on a si
 
 ### 2. Register Mapping & Configuration
 
-| head | times |
-|------|-------|
-|Yo    | cook  |
+| **ADDRESS** | **Register Name** | **Description & Default Settings**                                                 |
+|-------------|-------------------|------------------------------------------------------------------------------------|
+| 0x0         | REG0              | ALU operand A                                                                      |
+| 0x1         | REG1              | ALU operand B                                                                      |
+| 0x2         | REG2              | UART Config: Parity Enable (REG2[0]), Parity Type (REG2[1]), Prescale (REG2[7:2])  |
+| 0x3         | REG3              | Clock Divider Ratio                                                                |
+| 0x4-0x15    | REG4-REG15        | General-purpose storage for r/w operations                                         |
+
