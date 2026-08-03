@@ -126,9 +126,9 @@ Because the design is adapted for Tiny Tapeout, the entire chip operates on a si
 
 The system utilizes four high-level UART packet formats parsed by the `SYS_CTRL` unit to execute memory and arithmetic commands:
 
-| **Command Type** | **Opcode** | **Frame Count** | **Frame Breakdown** | **Description** |
-| :--- | :--- | :--- | :--- | :--- |
-| **Register Write** | `0xAA` | 3 Frames | `Frame 0: 0xAA`<br>`Frame 1: Target Address`<br>`Frame 2: Write Data` | Writes 8-bit data into the targeted Register File address. |
-| **Register Read** | `0xBB` | 2 Frames | `Frame 0: 0xBB`<br>`Frame 1: Target Address` | Reads 8-bit data from the specified register and transmits it back over `UART_TX`. |
-| **ALU Op with Operands** | `0xCC` | 4 Frames | `Frame 0: 0xCC`<br>`Frame 1: Operand A`<br>`Frame 2: Operand B`<br>`Frame 3: ALU Function Code` | Updates `REG0` and `REG1` with new operands, executes the ALU operation, and streams the result back over `UART_TX`. |
-| **ALU Op (No Operands)** | `0xDD` | 2 Frames | `Frame 0: 0xDD`<br>`Frame 1: ALU Function Code` | Executes the specified operation using existing operands stored in `REG0` and `REG1`, streaming the result back over `UART_TX`. |
+| **Command Type**         | **Opcode** | **Frame Count** | **Frame Breakdown**                                                   | **Description** |
+| :---                     | :---       | :---            | :---                                                                  | :---            |
+| **Register Write**       | `0xAA`     | 3 Frames        | `Frame 0: 0xAA`<br>`Frame 1: Target Address`<br>`Frame 2: Write Data` | Writes 8-bit data into the targeted Register File address. |
+| **Register Read**        | `0xBB`   | 2 Frames        | `Frame 0: 0xBB`<br>`Frame 1: Target Address`                          | Reads 8-bit data from the specified register and transmits it back over `UART_TX`. |
+| **ALU Op with Operands** | `0xCC`   | 4 Frames | `Frame 0: 0xCC`<br>`Frame 1: Operand A`<br>`Frame 2: Operand B`<br>`Frame 3: ALU Function Code` | Updates `REG0` and `REG1` with new operands, executes the ALU operation, and streams the result back over `UART_TX`. |
+| **ALU Op (No Operands)** | `0xDD`   | 2 Frames | `Frame 0: 0xDD`<br>`Frame 1: ALU Function Code` | Executes the specified operation using existing operands stored in `REG0` and `REG1`, streaming the result back over `UART_TX`. |
