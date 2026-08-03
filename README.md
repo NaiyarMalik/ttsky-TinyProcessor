@@ -28,13 +28,13 @@ That passion also runs in my family. Growing up, my dad was deeply passionate ab
 * An 8x8 Register File for data staging and configuration
 * Synchronous clocking and power-aware clock gating
 
-> 📖 **For full technical specifications, architecture diagrams, command protocol tables, and instruction set details, please check out [`info.md`](./info.md).**
+> 📖 **For full technical specifications, architecture diagrams, command protocol tables, and instruction set details, please check out [`info.md`](./docs/info.md).**
 
 
 
 ## Quick Navigation
 
-* **[`info.md`](./info.md)** — Detailed system breakdown, ALU instruction set, and register mapping.
+* **[`info.md`](./docs/info.md)** — Detailed system breakdown, ALU instruction set, and register mapping.
 * **`docs/`** — Physical design layout screenshots (GDSII floorplan and 3D renders).
 * **`test/`** — Cocotb simulation testbenches and GTKWave verification scripts.
 * **`src/`** — Verilog Code.
