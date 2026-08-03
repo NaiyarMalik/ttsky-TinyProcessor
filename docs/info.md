@@ -91,7 +91,7 @@ Everything now runs from the 50 MHz reference clock. **
 
 ## How it works
 
-The system functions as a command-driven digital processing and control engine. It receives multi-frame commands from an external Master via a UART RX interface, processes operations through a central System Control FSM (SYS_CTRL), and transfers results or register data back to the Master through a UART TX interface.
+The processor operates as a UART-controlled command execution engine, communicating with an external host through a standard UART interface configured for 1 start bit, 8 data bits, 1 parity bit, and 1 stop bit (8P1). Commands are transmitted as multi-frame UART packets, allowing the processor to receive complete instructions consisting of operation codes, register addresses, and data operands. These frames are decoded by the System Control FSM (SYS_CTRL), which coordinates register accesses and ALU operations before transmitting results or status information back to the host through the UART transmitter.
 
 
 ### 1. Unified Clock Architecture (REF_CLK)
@@ -112,7 +112,7 @@ Because the design is adapted for Tiny Tapeout, the entire chip operates on a si
 
 ### 2. Register Mapping & Configuration
 
-| **ADDRESS** | **Register Name** | **Description & Default Settings**                                                 |
+| **Address** | **Register Name** | **Description & Default Settings**                                                 |
 |-------------|-------------------|------------------------------------------------------------------------------------|
 | 0x0         | REG0              | ALU operand A                                                                      |
 | 0x1         | REG1              | ALU operand B                                                                      |
@@ -120,3 +120,15 @@ Because the design is adapted for Tiny Tapeout, the entire chip operates on a si
 | 0x3         | REG3              | Clock Divider Ratio                                                                |
 | 0x4-0x15    | REG4-REG15        | General-purpose storage for r/w operations                                         |
 
+### 3. Command Protocol
+
+### Command Protocol
+
+The system utilizes four high-level UART packet formats parsed by the `SYS_CTRL` unit to execute memory and arithmetic commands:
+
+| **Command Type** | **Opcode** | **Frame Count** | **Frame Breakdown** | **Description** |
+| :--- | :--- | :--- | :--- | :--- |
+| **Register Write** | `0xAA` | 3 Frames | `Frame 0: 0xAA`<br>`Frame 1: Target Address`<br>`Frame 2: Write Data` | Writes 8-bit data into the targeted Register File address. |
+| **Register Read** | `0xBB` | 2 Frames | `Frame 0: 0xBB`<br>`Frame 1: Target Address` | Reads 8-bit data from the specified register and transmits it back over `UART_TX`. |
+| **ALU Op with Operands** | `0xCC` | 4 Frames | `Frame 0: 0xCC`<br>`Frame 1: Operand A`<br>`Frame 2: Operand B`<br>`Frame 3: ALU Function Code` | Updates `REG0` and `REG1` with new operands, executes the ALU operation, and streams the result back over `UART_TX`. |
+| **ALU Op (No Operands)** | `0xDD` | 2 Frames | `Frame 0: 0xDD`<br>`Frame 1: ALU Function Code` | Executes the specified operation using existing operands stored in `REG0` and `REG1`, streaming the result back over `UART_TX`. |

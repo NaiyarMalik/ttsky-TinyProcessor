@@ -1,42 +1,40 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Tiny Tapeout Verilog Project Template
+# TinyProcessor (`tt_um_TinyProcessor_naiyar`)
 
-- [Read the documentation for project](docs/info.md)
+Welcome to **TinyProcessor**, a custom digital integrated circuit designed for physical silicon fabrication on the SkyWater 130nm process node via Tiny Tapeout!
+
+---
 
 ## What is Tiny Tapeout?
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+[Tiny Tapeout](https://tinytapeout.com/) is an educational platform designed to make chip design and silicon fabrication accessible to students, hobbyists, and engineers worldwide. By aggregating multiple digital designs onto a single shared die, Tiny Tapeout enables custom silicon implementations to be manufactured through open-source ASIC flows like OpenLane and SkyWater's PDK.
 
-To learn more and get started, visit https://tinytapeout.com.
+---
 
-## Set up your Verilog project
+## Why I Built This Project
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+My journey into chip design started during my second year as an Electrical Engineering student at McMaster University. Taking **ELECENG 2DI4 (Logic Design)** completely shifted how I viewed technology, it sparked a deep curiosity about how machines process information at the most fundamental transistor and gate levels. 
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
+That passion also runs in my family. Growing up, my dad was deeply passionate about technology and even owned a computer store back home. Seeing his passion for computers inspired me from a young age to think deeply about how these systems function from the inside out. Building `TinyProcessor` and taking it all the way from Verilog RTL to actual silicon floorplanning has been an incredible hands-on journey to turn that curiosity into real hardware.
 
-## Enable GitHub actions to build the results page
+---
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+## System Overview & Technical Details
 
-## Resources
+`TinyProcessor` is a command-driven micro-architecture featuring:
+* A central controller FSM (`SYS_CTRL`) parsing multi-byte UART command protocols
+* An 8-bit Arithmetic Logic Unit (ALU) supporting 14 arithmetic, logic, and comparison operations
+* An 8x8 Register File for data staging and configuration
+* Synchronous clocking and power-aware clock gating
 
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
+> 📖 **For full technical specifications, architecture diagrams, command protocol tables, and instruction set details, please check out [`info.md`](./info.md).**
 
-## What next?
+---
 
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+## Quick Navigation
+
+* **[`info.md`](./info.md)** — Detailed system breakdown, ALU instruction set, and register mapping.
+* **`docs/`** — Physical design layout screenshots (GDSII floorplan and 3D renders).
+* **`test/`** — Cocotb simulation testbenches and GTKWave verification scripts.
+* **`src/`** — Verilog Code.
