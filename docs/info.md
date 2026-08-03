@@ -59,6 +59,28 @@ RTL design -> Verification -> synthesis -> place-and-route -> physical implement
 - Fully verified using Verilog Test Bench, Cocotb and GTKWave
 
 
+## Schematics and Visuals
+
+![alt text](image-1.png)
+
+This is the Post-routing GDSII layout view of the custom digital ASIC design, showcasing standard cell placement, power ring/rail distribution, and multi-layer metal interconnect routing following physical design hardening and timing closure.
+
+![alt text](image-2.png)
+
+3D physical layout view of the custom TinyProcessor core implemented using the SkyWater 130nm PDK (sky130_fd_sc_hd). The visualization showcases the layered metal interconnects (met1–met5), standard cell placement, and vertical power straps rendered directly in the Tiny Tapeout 3D GDS viewer.
+
+![System Schematic](image.png)
+
+** Note: 
+        
+    - Tiny Tapeout only provides a single external clock, so we removed:
+        - ❌ Asynchronous FIFO
+        - ❌ Clock Domain Crossing (CDC) logic
+        - ❌ data_sync
+        - ❌ Separate UART clock domain
+
+Everything now runs from the 50 MHz reference clock. **
+
 ## How it works
 
 This project implements an integrated system that executes remote commands sent over a serial UART interface. The core consists of ten functional blocks distributed across two distinct clock domains: a high-speed reference clock domain (REF_CLK) and a standard communication clock domain (UART_CLK).  Incoming data frames received by the UART Receiver are synchronized and pushed to a system controller. This controller parses commands to perform either Register File reads/writes or arithmetic/logic operations using a built-in ALU. To handle the clock-domain crossing smoothly between processing and serialization, data results are buffered through an Asynchronous FIFO before being sent back to the master terminal via the UART Transmitter.
