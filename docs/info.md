@@ -61,15 +61,19 @@ RTL design -> Verification -> synthesis -> place-and-route -> physical implement
 
 ## Schematics and Visuals
 
+Below is the Post-routing GDSII layout view of the custom digital ASIC design, showcasing standard cell placement, power ring/rail distribution, and multi-layer metal interconnect routing following physical design hardening and timing closure:
+
 ![alt text](image-1.png)
 
-This is the Post-routing GDSII layout view of the custom digital ASIC design, showcasing standard cell placement, power ring/rail distribution, and multi-layer metal interconnect routing following physical design hardening and timing closure.
+
+
+3D physical layout view of the custom TinyProcessor core implemented using the SkyWater 130nm PDK (sky130_fd_sc_hd). The visualization showcases the layered metal interconnects (met1–met5), standard cell placement, and vertical power straps rendered directly in the Tiny Tapeout 3D GDS viewer:
 
 ![alt text](image-2.png)
 
-3D physical layout view of the custom TinyProcessor core implemented using the SkyWater 130nm PDK (sky130_fd_sc_hd). The visualization showcases the layered metal interconnects (met1–met5), standard cell placement, and vertical power straps rendered directly in the Tiny Tapeout 3D GDS viewer.
 
-![System Schematic](image.png)
+
+Below is the original Schematic
 
 ** Note: 
         
@@ -81,19 +85,33 @@ This is the Post-routing GDSII layout view of the custom digital ASIC design, sh
 
 Everything now runs from the 50 MHz reference clock. **
 
+![System Schematic](image.png)
+
+
+
 ## How it works
 
-This project implements an integrated system that executes remote commands sent over a serial UART interface. The core consists of ten functional blocks distributed across two distinct clock domains: a high-speed reference clock domain (REF_CLK) and a standard communication clock domain (UART_CLK).  Incoming data frames received by the UART Receiver are synchronized and pushed to a system controller. This controller parses commands to perform either Register File reads/writes or arithmetic/logic operations using a built-in ALU. To handle the clock-domain crossing smoothly between processing and serialization, data results are buffered through an Asynchronous FIFO before being sent back to the master terminal via the UART Transmitter.
+The system functions as a command-driven digital processing and control engine. It receives multi-frame commands from an external Master via a UART RX interface, processes operations through a central System Control FSM (SYS_CTRL), and transfers results or register data back to the Master through a UART TX interface.
 
-## How to test
 
-## How to test
+### 1. Unified Clock Architecture (REF_CLK)
 
-To test this project:
+Because the design is adapted for Tiny Tapeout, the entire chip operates on a single synchronous clock domain (REF_CLK). All modules, including the UART controller, FSM, and ALU, run synchronously off this master system clock.
 
-Clone the repository.
-Run the provided testbench:
+ - SYS_CTRL.v (System Controller): The primary FSM that decodes incoming commands from the UART receiver, orchestrates register file access, triggers      the ALU, and dispatches output data to the UART transmitter.
 
-## External hardware
+ - RegFile.v (Register File): An 8x8 storage bank used for data staging, holding operand values, and storing UART/Clock Divider configuration settings. 
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+ - ALU.v (Arithmetic Logic Unit): Executes 14 supported arithmetic, bitwise logical, comparison, and shift operations on Operands A and B.
+
+ - UART (RX / TX): Handles serial-to-parallel reception (RX) and parallel-to-serial transmission (TX) synchronously using baud rate generation derived directly from the main system clock.
+
+ - Clock Gating: Dynamically gates REF_CLK fed to the ALU via Gate_EN to minimize dynamic switching power when no ALU calculations are active.
+
+ - RST_SYNC: Synchronizes the active-low external reset line (RST) to the system clock.
+
+### 2. Register Mapping & Configuration
+
+| head | times |
+|------|-------|
+|Yo    | cook  |
