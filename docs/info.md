@@ -21,7 +21,7 @@ RTL design -> Verification -> synthesis -> place-and-route -> physical implement
 
 - 50MHz System Clock
 
-- 3.125MHz UART Clock (96000 Baud Rate)
+- 3.125MHz UART Clock (9600 Baud Rate)
 
 - UART-controlled instruction interface
 
